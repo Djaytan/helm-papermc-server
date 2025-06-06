@@ -45,3 +45,13 @@ spec:
           env:
             - name: EULA
               value: {{ .Values.eula | squote }}
+          livenessProbe:
+            exec:
+              command: ["mc-monitor", "status"]
+            periodSeconds: 1
+            failureThreshold: 5 # 5 seconds before considering the pod as unhealthy
+          startupProbe:
+            exec:
+              command: ["mc-monitor", "status"]
+            periodSeconds: 1
+            failureThreshold: 60 # 1 minute before considering the startup as failed
