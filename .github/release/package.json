@@ -1,0 +1,11 @@
+{
+  "name": "release",
+  "devDependencies": {
+    "@commitlint/cli": "19.8.1",
+    "@commitlint/config-conventional": "19.8.1"
+  },
+  "engines": {
+    "node": "^22.0.0"
+  },
+  "packageManager": "npm@11.4.1"
+}
