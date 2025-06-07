@@ -17,3 +17,14 @@ container:
 service:
   ports:
     nodePort: 30000
+
+# Health checks configuration.
+# If the server is deemed "unhealthy", it will be automatically restarted
+# to ensure high availability and minimize downtime.
+healthcheck:
+  # Time interval (in seconds) between consecutive health checks.
+  checkInterval: 1
+  # Number of failed checks before the server is considered unhealthy.
+  failureThreshold:
+    startup: 60   # During startup phase.
+    liveness: 5   # During normal operation.
