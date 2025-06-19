@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "PaperMC-server Helm Chart Values Schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Optional name override for the server. Defaults to the Helm release name if not set."
+    },
+    "namespace": {
+      "type": "string",
+      "description": "Kubernetes namespace for the deployment."
+    },
+    "eula": {
+      "type": "boolean",
+      "description": "Must be set to true to accept Minecraft's EULA."
+    },
+    "container": {
+      "type": "object",
+      "description": "Container configuration.",
+      "properties": {
+        "image": {
+          "type": "string",
+          "description": "Container image to use for the server."
+        },
+        "resources": {
+          "type": "object",
+          "description": "Resource requests and limits.",
+          "properties": {
+            "requests": {
+              "type": "object",
+              "properties": {
+                "ephemeralStorage": { "type": "string" },
+                "cpu": { "type": "integer", "minimum": 1 },
+                "memory": { "type": "string" }
+              },
+              "required": ["ephemeralStorage", "cpu", "memory"]
+            },
+            "limits": {
+              "type": "object",
+              "required": ["ephemeralStorage", "cpu", "memory"],
+              "properties": {
+                "ephemeralStorage": { "type": "string" },
+                "cpu": { "type": "integer", "minimum": 1 },
+                "memory": { "type": "string" }
+              }
+            }
+          },
+          "required": ["requests", "limits"]
+        }
+      },
+      "required": ["image", "resources"]
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "ports": {
+          "type": "object",
+          "properties": {
+            "nodePort": {
+              "type": "integer",
+              "minimum": 30000,
+              "maximum": 32767,
+              "description": "NodePort to expose the Minecraft server on."
+            }
+          },
+          "required": ["nodePort"]
+        }
+      },
+      "required": ["ports"]
+    },
+    "healthcheck": {
+      "type": "object",
+      "description": "Health check configuration to restart the server if it becomes unhealthy.",
+      "properties": {
+        "checkInterval": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Time interval in seconds between consecutive health checks."
+        },
+        "failureThreshold": {
+          "type": "object",
+          "properties": {
+            "startup": {
+              "type": "integer",
+              "description": "Threshold in seconds to declare the server unhealthy during startup."
+            },
+            "liveness": {
+              "type": "integer",
+              "description": "Threshold in seconds to declare the server unhealthy during normal operation."
+            }
+          },
+          "required": ["startup", "liveness"]
+        }
+      },
+      "required": ["checkInterval", "failureThreshold"]
+    }
+  },
+  "required": ["namespace", "eula", "container", "service", "healthcheck"]
+}
