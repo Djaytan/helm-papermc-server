@@ -1,4 +1,5 @@
 {
+  "$id": "https://github.com/Djaytan/helm-papermc-server",
   "$schema": "https://json-schema.org/draft-07/schema#",
   "title": "PaperMC-server Helm Chart Values Schema",
   "type": "object",
