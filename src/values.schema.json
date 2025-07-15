@@ -21,8 +21,30 @@
       "description": "Configuration related to the server's container, like image and resource settings.",
       "properties": {
         "image": {
-          "type": "string",
-          "description": "OCI image to use for running the Minecraft server (e.g., 'djaytan/papermc-server:dev')."
+          "type": "object",
+          "description": "Detailed definition of the OCI image to use for running the Minecraft server.",
+          "properties": {
+            "registry": {
+              "type": "string",
+              "description": "Hostname of the registry from which to pull the OCI image.",
+              "default": "docker.io"
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the image repository (e.g., 'djaytan/papermc-server').",
+              "default": "djaytan/papermc-server"
+            },
+            "tag": {
+              "type": "string",
+              "description": "Tag of the image to pull.",
+              "default": "latest"
+            },
+            "digest": {
+              "type": "string",
+              "description": "Digest (checksum) to ensure image integrity; use 'none' to disable.",
+              "default": "none"
+            }
+          }
         },
         "resources": {
           "type": "object",
