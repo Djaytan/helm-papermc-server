@@ -3,7 +3,11 @@ namespace: default
 eula: false
 
 container:
-  image: djaytan/papermc-server:dev
+  image:
+    registry: docker.io
+    name: djaytan/papermc-server
+    tag: latest
+    digest: none
   resources:
     requests:
       ephemeralStorage: 10Gi
