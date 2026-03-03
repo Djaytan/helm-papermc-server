@@ -6,34 +6,66 @@
   "properties": {
     "name": {
       "type": "string",
-      "description": "Optional name override for the server. Defaults to the Helm release name if not set."
+      "description": "Custom name for the server instance. If not set, the Helm release name will be used by default."
     },
     "namespace": {
       "type": "string",
-      "description": "Kubernetes namespace for the deployment."
+      "description": "The Kubernetes namespace where the server will be deployed."
     },
     "eula": {
       "type": "boolean",
-      "description": "Must be set to true to accept Minecraft's EULA."
+      "description": "You must set this to true to indicate acceptance of Minecraft's End User License Agreement (EULA). The server won't start unless this is accepted."
     },
     "container": {
       "type": "object",
-      "description": "Container configuration.",
+      "description": "Configuration related to the server's container, like image and resource settings.",
       "properties": {
         "image": {
-          "type": "string",
-          "description": "Container image to use for the server."
+          "type": "object",
+          "description": "Detailed definition of the OCI image to use for running the Minecraft server.",
+          "properties": {
+            "registry": {
+              "type": "string",
+              "description": "Hostname of the registry from which to pull the OCI image.",
+              "default": "docker.io"
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the image repository (e.g., 'djaytan/papermc-server').",
+              "default": "djaytan/papermc-server"
+            },
+            "tag": {
+              "type": "string",
+              "description": "Tag of the image to pull.",
+              "default": "latest"
+            },
+            "digest": {
+              "type": "string",
+              "description": "Digest (checksum) to ensure image integrity; use 'none' to disable.",
+              "default": "none"
+            }
+          }
         },
         "resources": {
           "type": "object",
-          "description": "Resource requests and limits.",
+          "description": "Kubernetes resource constraints for the container, used to control CPU, memory, and ephemeral storage usage. See: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes",
           "properties": {
             "requests": {
               "type": "object",
               "properties": {
-                "ephemeralStorage": { "type": "string" },
-                "cpu": { "type": "integer", "minimum": 1 },
-                "memory": { "type": "string" }
+                "ephemeralStorage": {
+                  "type": "string",
+                  "description": "Amount of ephemeral (temporary) storage requested (e.g., '10Gi'). See: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes"
+                },
+                "cpu": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Minimum number of CPU units requested for the container."
+                },
+                "memory": {
+                  "type": "string",
+                  "description": "Minimum amount of memory requested (e.g., '8Gi'). See: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes"
+                }
               },
               "required": ["ephemeralStorage", "cpu", "memory"]
             },
@@ -41,9 +73,19 @@
               "type": "object",
               "required": ["ephemeralStorage", "cpu", "memory"],
               "properties": {
-                "ephemeralStorage": { "type": "string" },
-                "cpu": { "type": "integer", "minimum": 1 },
-                "memory": { "type": "string" }
+                "ephemeralStorage": {
+                  "type": "string",
+                  "description": "Maximum amount of ephemeral (temporary) storage requested (e.g., '10Gi').See: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes"
+                },
+                "cpu": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Maximum number of CPU units the container can use."
+                },
+                "memory": {
+                  "type": "string",
+                  "description": "Maximum amount of memory requested (e.g., '8Gi').See: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes"
+                }
               }
             }
           },
@@ -62,7 +104,7 @@
               "type": "integer",
               "minimum": 30000,
               "maximum": 32767,
-              "description": "NodePort to expose the Minecraft server on."
+              "description": "NodePort used to expose the Minecraft server to external clients. Must be within the Kubernetes NodePort range (30000–32767)."
             }
           },
           "required": ["nodePort"]
@@ -72,23 +114,23 @@
     },
     "healthcheck": {
       "type": "object",
-      "description": "Health check configuration to restart the server if it becomes unhealthy.",
+      "description": "Settings for monitoring server health and restarting it if it becomes unresponsive.",
       "properties": {
         "checkInterval": {
           "type": "integer",
           "minimum": 1,
-          "description": "Time interval in seconds between consecutive health checks."
+          "description": "Interval in seconds between health checks. Shorter intervals detect problems faster but increase resource use."
         },
         "failureThreshold": {
           "type": "object",
           "properties": {
             "startup": {
               "type": "integer",
-              "description": "Threshold in seconds to declare the server unhealthy during startup."
+              "description": "Maximum number of seconds the server can remain unresponsive during startup before being considered unhealthy."
             },
             "liveness": {
               "type": "integer",
-              "description": "Threshold in seconds to declare the server unhealthy during normal operation."
+              "description": "Maximum number of seconds the server can be unresponsive during normal operation before it is restarted."
             }
           },
           "required": ["startup", "liveness"]

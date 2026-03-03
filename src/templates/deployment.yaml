@@ -18,7 +18,7 @@ spec:
         runAsUser: 2
       containers:
         - name: {{ include "papermc-server.name" . }}
-          image: {{ .Values.container.image }}
+          image: {{ include "papermc-server.image" . }}
           stdin: true
           tty: true
           securityContext:
