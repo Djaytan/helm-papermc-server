@@ -7,7 +7,7 @@
     "conventional-changelog-conventionalcommits": "9.0.0"
   },
   "engines": {
-    "node": "^22.0.0"
+    "node": "^26.0.0"
   },
   "packageManager": "npm@11.4.1"
 }
