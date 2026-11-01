@@ -4,7 +4,7 @@
     "@commitlint/cli": "19.8.1",
     "@commitlint/config-conventional": "19.8.1",
     "semantic-release": "24.2.5",
-    "conventional-changelog-conventionalcommits": "9.0.0"
+    "conventional-changelog-conventionalcommits": "9.3.1"
   },
   "engines": {
     "node": "^22.0.0"
